@@ -1,10 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEditor;
-#if VRC_SDK_VRCSDK3
 using VRC.SDK3.Editor;
-#elif VRC_SDK_VRCSDK2
-#endif
 using VRC.SDKBase.Editor;
 using Jirko.Unity.VRoidAvatarUtils;
 
@@ -19,19 +16,11 @@ namespace Jirko.Unity.VRoidAvatarUtils
 
         public int avatarMode = 0;
         public bool viewPosition = true;
-#if VRC_SDK_VRCSDK3
         public bool eyeMovements = true;
         public bool baseAnimationLayers = true;
         public bool specialAnimationLayers = true;
         public bool expressionsMenu = true;
         public bool expressionParameters = true;
-#elif VRC_SDK_VRCSDK2
-        public bool eyeMovements = false;
-        public bool baseAnimationLayers = false;
-        public bool specialAnimationLayers = false;
-        public bool expressionsMenu = false;
-        public bool expressionParameters = false;
-#endif
         public bool rotationStates = true;
         public bool blueprintId = true;
         public bool dynamicBones = true;
@@ -68,7 +57,6 @@ namespace Jirko.Unity.VRoidAvatarUtils
 
             viewPosition = EditorGUILayout.Toggle("View Position", viewPosition);
 
-#if VRC_SDK_VRCSDK3
             if (folding = EditorGUILayout.Foldout(folding, "Eye Look"))
             {
                 eyeMovements = EditorGUILayout.Toggle("Eye Movements", eyeMovements);
@@ -85,8 +73,7 @@ namespace Jirko.Unity.VRoidAvatarUtils
             EditorGUILayout.LabelField("Expressions", EditorStyles.boldLabel);
             expressionsMenu = EditorGUILayout.Toggle("Menu", expressionsMenu);
             expressionParameters = EditorGUILayout.Toggle("Parameters", expressionParameters);
-#elif VRC_SDK_VRCSDK2
-#endif
+
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Pipeline Manager", EditorStyles.boldLabel);
             blueprintId = EditorGUILayout.Toggle("Blueprint ID", blueprintId);

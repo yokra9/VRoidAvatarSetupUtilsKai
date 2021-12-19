@@ -1,10 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEditor;
-#if VRC_SDK_VRCSDK3
 using VRC.SDK3.Editor;
-#elif VRC_SDK_VRCSDK2
-#endif
 using VRC.SDKBase.Editor;
 using Jirko.Unity.VRoidAvatarUtils;
 using System.Collections.Generic;
