@@ -21,8 +21,16 @@ namespace Jirko.Unity.VRoidAvatarUtils
         public bool viewPosition = true;
 #if VRC_SDK_VRCSDK3
         public bool eyeMovements = true;
+        public bool baseAnimationLayers = true;
+        public bool specialAnimationLayers = true;
+        public bool expressionsMenu = true;
+        public bool expressionParameters = true;
 #elif VRC_SDK_VRCSDK2
         public bool eyeMovements = false;
+        public bool baseAnimationLayers = false;
+        public bool specialAnimationLayers = false;
+        public bool expressionsMenu = false;
+        public bool expressionParameters = false;
 #endif
         public bool rotationStates = true;
         public bool blueprintId = true;
@@ -67,6 +75,16 @@ namespace Jirko.Unity.VRoidAvatarUtils
                 rotationStates = EditorGUILayout.Toggle("Rotation States", rotationStates);
 
             }
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Playable Layers", EditorStyles.boldLabel);
+            baseAnimationLayers = EditorGUILayout.Toggle("Base", baseAnimationLayers);
+            specialAnimationLayers = EditorGUILayout.Toggle("Special", specialAnimationLayers);
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Expressions", EditorStyles.boldLabel);
+            expressionsMenu = EditorGUILayout.Toggle("Menu", expressionsMenu);
+            expressionParameters = EditorGUILayout.Toggle("Parameters", expressionParameters);
 #elif VRC_SDK_VRCSDK2
 #endif
             EditorGUILayout.Space();
@@ -106,6 +124,10 @@ namespace Jirko.Unity.VRoidAvatarUtils
                 sourceAvatarDTO.avatarMode = avatarMode;
                 sourceAvatarDTO.viewPosition = viewPosition;
                 sourceAvatarDTO.eyeMovements = eyeMovements;
+                sourceAvatarDTO.baseAnimationLayers = baseAnimationLayers;
+                sourceAvatarDTO.specialAnimationLayers = specialAnimationLayers;
+                sourceAvatarDTO.expressionsMenu = expressionsMenu;
+                sourceAvatarDTO.expressionParameters = expressionParameters;
                 sourceAvatarDTO.rotationStates = rotationStates;
                 sourceAvatarDTO.blueprintId = blueprintId;
                 sourceAvatarDTO.dynamicBones = dynamicBones;

@@ -35,6 +35,13 @@ namespace Jirko.Unity.VRoidAvatarUtils
         public Quaternion quaterSR;
         public string srcBlueprintId;
 
+#if VRC_SDK_VRCSDK3
+        public VRCAvatarDescriptor.CustomAnimLayer[] srcBaseAnimationLayers;
+        public VRCAvatarDescriptor.CustomAnimLayer[] srcSpecialAnimationLayers;
+        public VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionsMenu srcExpressionsMenu;
+        public VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionParameters srcExpressionParameters;
+#endif
+
         public int avatarMode = 0;
         public bool viewPosition = true;
         public bool eyeMovements = true;
@@ -48,6 +55,10 @@ namespace Jirko.Unity.VRoidAvatarUtils
         public bool dynamicBones_other = true;
         public bool dynamicBoneColiders = true;
         public bool objects = true;
+        public bool baseAnimationLayers = true;
+        public bool specialAnimationLayers = true;
+        public bool expressionsMenu = true;
+        public bool expressionParameters = true;
 
         public VRoidAvatar(GameObject gameObject)
         {
@@ -72,6 +83,10 @@ namespace Jirko.Unity.VRoidAvatarUtils
 #if VRC_SDK_VRCSDK3
             confidence = sourceAvatarDescriptor.customEyeLookSettings.eyeMovement.confidence;
             excitement = sourceAvatarDescriptor.customEyeLookSettings.eyeMovement.excitement;
+            srcBaseAnimationLayers = sourceAvatarDescriptor.baseAnimationLayers;
+            srcSpecialAnimationLayers = sourceAvatarDescriptor.specialAnimationLayers;
+            srcExpressionsMenu = sourceAvatarDescriptor.expressionsMenu;
+            srcExpressionParameters = sourceAvatarDescriptor.expressionParameters;
 
             EyeRotations eyesLooking = sourceAvatarDescriptor.customEyeLookSettings.eyesLookingRight;
             quaterRL = new Quaternion(eyesLooking.left.x, eyesLooking.left.y, eyesLooking.left.z, eyesLooking.left.w);
@@ -178,6 +193,30 @@ namespace Jirko.Unity.VRoidAvatarUtils
                 targetAvatarDescriptor.customEyeLookSettings.eyesLookingStraight.right = quaterSR;
             }
 #elif VRC_SDK_VRCSDK2
+#endif
+
+#if VRC_SDK_VRCSDK3
+            if(baseAnimationLayers){
+                messages.Add("BaseAnimationLayersをコピー");
+                targetAvatarDescriptor.baseAnimationLayers = srcBaseAnimationLayers; 
+            }
+
+            if(specialAnimationLayers){
+                messages.Add("SpecialAnimationLayersをコピー");
+                targetAvatarDescriptor.specialAnimationLayers = srcSpecialAnimationLayers; 
+            }
+#endif
+
+#if VRC_SDK_VRCSDK3
+            if(baseAnimationLayers){
+                messages.Add("ExpressionsMenuをコピー");
+                targetAvatarDescriptor.expressionsMenu = srcExpressionsMenu; 
+            }
+
+            if(specialAnimationLayers){
+                messages.Add("ExpressionParametersをコピー");
+                targetAvatarDescriptor.expressionParameters = srcExpressionParameters; 
+            }
 #endif
 
             if (blueprintId)
