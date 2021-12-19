@@ -6,6 +6,12 @@ https://jirko.booth.pm/items/3232745
 
 使い方は以下Qiita記事を参照ください。
 
+・VRoidから生成したVRChat用アバターのパラメータ再設定（DynamicBone含む）を自動で行う
+　https://qiita.com/jirko/items/7f1aaee574675273bc39
+
+・DynamicBoneのColliders項目のMissingやNoneを一括で削除する
+　https://qiita.com/jirko/items/a679aa6b09210f9dfb10
+
 ◆利用規約・免責事項
 本規約は本商品に含まれるすべてのスクリプトやファイルに共通で適用されるものとします。
 本スクリプトのEditor拡張の使用およびそれにより作成されたものによる

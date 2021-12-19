@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using UnityEditor;  //!< UnityEditorを使うよ！using UnityEngine;
+using UnityEditor;
 #if VRC_SDK_VRCSDK3
 using VRC.SDK3.Editor;
 #elif VRC_SDK_VRCSDK2
@@ -10,7 +10,7 @@ using Jirko.Unity.VRoidAvatarUtils;
 
 namespace Jirko.Unity.VRoidAvatarUtils
 {
-    public class VRoidAvatarSetupUtilsUI : EditorWindow
+    public class CopyAvatarParametersUI : EditorWindow
     {
         bool folding = true;
         Vector2 scrollPosition = new Vector2(0, 0);
@@ -41,10 +41,10 @@ namespace Jirko.Unity.VRoidAvatarUtils
 
         private VRoidAvatar sourceAvatarDTO = null;
 
-        [MenuItem("VRoidAvatarSetup/Open CopyAvatarParameters Wizard")]
+        [MenuItem("VRoidAvatarSetup/Open CopyAvatarParameters Wizard", priority = 1)]
         static void ShowWindow()
         {
-            var window = EditorWindow.GetWindow<VRoidAvatarSetupUtilsUI>();
+            var window = EditorWindow.GetWindow<CopyAvatarParametersUI>();
             window.minSize = new Vector2(400, 500);
         }
 
