@@ -176,12 +176,42 @@ namespace Jirko.Unity.VRoidAvatarUtils
 
             if(baseAnimationLayers){
                 messages.Add("BaseAnimationLayersをコピー");
-                targetAvatarDescriptor.baseAnimationLayers = srcBaseAnimationLayers; 
+                foreach (var layer in srcBaseAnimationLayers){
+                    switch(layer.type){
+                        case VRCAvatarDescriptor.AnimLayerType.Base:
+                            targetAvatarDescriptor.baseAnimationLayers[0] = layer;
+                            break;
+                        case VRCAvatarDescriptor.AnimLayerType.Additive:
+                            targetAvatarDescriptor.baseAnimationLayers[1] = layer;
+                            break;
+                        case VRCAvatarDescriptor.AnimLayerType.Gesture:
+                            targetAvatarDescriptor.baseAnimationLayers[2] = layer;
+                            break;
+                        case VRCAvatarDescriptor.AnimLayerType.Action:
+                            targetAvatarDescriptor.baseAnimationLayers[3] = layer;
+                            break;
+                        case VRCAvatarDescriptor.AnimLayerType.FX:
+                            targetAvatarDescriptor.baseAnimationLayers[4] = layer;
+                            break;
+                    }
+                }
             }
 
             if(specialAnimationLayers){
                 messages.Add("SpecialAnimationLayersをコピー");
-                targetAvatarDescriptor.specialAnimationLayers = srcSpecialAnimationLayers; 
+                foreach (var layer in srcSpecialAnimationLayers){
+                    switch(layer.type){
+                        case VRCAvatarDescriptor.AnimLayerType.Sitting:
+                            targetAvatarDescriptor.specialAnimationLayers[0] = layer;
+                            break;
+                        case VRCAvatarDescriptor.AnimLayerType.TPose:
+                            targetAvatarDescriptor.specialAnimationLayers[1] = layer;
+                            break;
+                        case VRCAvatarDescriptor.AnimLayerType.IKPose:
+                            targetAvatarDescriptor.specialAnimationLayers[2] = layer;
+                            break;
+                    }
+                }
             }
 
             if(baseAnimationLayers){
