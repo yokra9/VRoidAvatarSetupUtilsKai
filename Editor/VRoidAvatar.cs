@@ -214,12 +214,12 @@ namespace Jirko.Unity.VRoidAvatarUtils
                 }
             }
 
-            if(baseAnimationLayers){
+            if(expressionsMenu){
                 messages.Add("ExpressionsMenuをコピー");
                 targetAvatarDescriptor.expressionsMenu = srcExpressionsMenu; 
             }
 
-            if(specialAnimationLayers){
+            if(expressionParameters){
                 messages.Add("ExpressionParametersをコピー");
                 targetAvatarDescriptor.expressionParameters = srcExpressionParameters; 
             }
