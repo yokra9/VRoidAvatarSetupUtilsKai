@@ -235,7 +235,8 @@ namespace Jirko.Unity.VRoidAvatarUtils
             if (objects)
             {
                 int obj_count = 0;
-                Transform[] allchildren = cloneGameObject.GetComponentsInChildren<Transform>();
+                const bool includeInactive = true;
+                Transform[] allchildren = cloneGameObject.GetComponentsInChildren<Transform>(includeInactive);
                 foreach (Transform child in allchildren)
                 {
                     if (child.gameObject.transform.parent != null)
