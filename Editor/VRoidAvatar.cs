@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Animations;
 using VRC.SDK3.Avatars.Components;
 using static VRC.SDK3.Avatars.Components.VRCAvatarDescriptor.CustomEyeLookSettings;
 using System.Collections.Generic;
@@ -53,6 +54,12 @@ namespace Jirko.Unity.VRoidAvatarUtils
         public bool specialAnimationLayers = true;
         public bool expressionsMenu = true;
         public bool expressionParameters = true;
+        public bool aimConstraint = true;
+        public bool lookAtConstraint = true;
+        public bool parentConstraint = true;
+        public bool positionConstraint = true;
+        public bool rotationConstraint = true;
+        public bool scaleConstraint = true;
 
         public VRoidAvatar(GameObject gameObject)
         {
@@ -450,6 +457,43 @@ namespace Jirko.Unity.VRoidAvatarUtils
                         }
                     }
                 }
+            }
+
+            if (aimConstraint || lookAtConstraint || parentConstraint || positionConstraint || rotationConstraint || scaleConstraint)
+            {
+                int constraints_count = 0;
+                void setConstraint<T>(T[] constraints) where T : Behaviour, IConstraint
+                {
+                    foreach (T constraint in constraints)
+                    {
+                        List<ConstraintSource> dest = new List<ConstraintSource>();
+                        List<ConstraintSource> from = new List<ConstraintSource>();
+                        constraint.GetSources(from);
+
+                        foreach (ConstraintSource f in from)
+                        {
+                            ConstraintSource d = new ConstraintSource();
+                            d.sourceTransform = gameObject.transform.Find(f.sourceTransform.gameObject.GetFullPath());
+                            d.weight = f.weight;
+                            dest.Add(d);
+                        }
+
+                        Transform target = gameObject.transform.Find(constraint.gameObject.GetFullPath());
+                        target.GetComponent<T>().SetSources(dest);
+
+                        constraints_count++;
+                    }
+                }
+
+                bool includeInactive = true;
+                if (aimConstraint) setConstraint(cloneGameObject.GetComponentsInChildren<AimConstraint>(includeInactive));
+                if (lookAtConstraint) setConstraint(cloneGameObject.GetComponentsInChildren<LookAtConstraint>(includeInactive));
+                if (parentConstraint) setConstraint(cloneGameObject.GetComponentsInChildren<ParentConstraint>(includeInactive));
+                if (positionConstraint) setConstraint(cloneGameObject.GetComponentsInChildren<PositionConstraint>(includeInactive));
+                if (rotationConstraint) setConstraint(cloneGameObject.GetComponentsInChildren<RotationConstraint>(includeInactive));
+                if (scaleConstraint) setConstraint(cloneGameObject.GetComponentsInChildren<ScaleConstraint>(includeInactive));
+
+                messages.Add("Constraintsをコピー（" + constraints_count + "件）");
             }
 
             UnityEngine.Object.DestroyImmediate(cloneGameObject);

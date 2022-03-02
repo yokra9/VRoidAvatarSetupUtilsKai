@@ -33,6 +33,13 @@ namespace Jirko.Unity.VRoidAvatarUtils
         public bool dynamicBoneColiders = true;
         public bool objects = false;
 
+        public bool aimConstraint = true;
+        public bool lookAtConstraint = true;
+        public bool parentConstraint = true;
+        public bool positionConstraint = true;
+        public bool rotationConstraint = true;
+        public bool scaleConstraint = true;
+
         public string messages = "";
         public string errors = "";
 
@@ -98,6 +105,14 @@ namespace Jirko.Unity.VRoidAvatarUtils
             EditorGUILayout.LabelField("Object", EditorStyles.boldLabel);
             objects = EditorGUILayout.Toggle("Objects", objects);
             EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Constraints", EditorStyles.boldLabel);
+            aimConstraint = EditorGUILayout.Toggle("Aim", aimConstraint);
+            lookAtConstraint = EditorGUILayout.Toggle("Look At", lookAtConstraint);
+            parentConstraint = EditorGUILayout.Toggle("Parent", parentConstraint);
+            positionConstraint = EditorGUILayout.Toggle("Position", positionConstraint);
+            rotationConstraint = EditorGUILayout.Toggle("Rotation", rotationConstraint);
+            scaleConstraint = EditorGUILayout.Toggle("Scale",scaleConstraint);
+            EditorGUILayout.Space();
 
             if (sourceObject == null || targetObject == null)
             {
@@ -125,6 +140,12 @@ namespace Jirko.Unity.VRoidAvatarUtils
                 sourceAvatarDTO.dynamicBones_other = dynamicBones_other;
                 sourceAvatarDTO.dynamicBoneColiders = dynamicBoneColiders;
                 sourceAvatarDTO.objects = objects;
+                sourceAvatarDTO.aimConstraint = aimConstraint;
+                sourceAvatarDTO.lookAtConstraint = lookAtConstraint;
+                sourceAvatarDTO.parentConstraint = parentConstraint;
+                sourceAvatarDTO.positionConstraint = positionConstraint;
+                sourceAvatarDTO.rotationConstraint = rotationConstraint;
+                sourceAvatarDTO.scaleConstraint = scaleConstraint;
 
                 Undo.RecordObject(targetObject, "Copy Parameters " + targetObject.name);
                 EditorUtility.SetDirty(targetObject);
