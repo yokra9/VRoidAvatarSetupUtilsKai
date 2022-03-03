@@ -1,10 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections.Generic;
 using UnityEditor;
-using VRC.SDK3.Editor;
-using VRC.SDKBase.Editor;
-using Jirko.Unity.VRoidAvatarUtils;
-using System.Collections.Generic;
+using UnityEngine;
 
 namespace Jirko.Unity.VRoidAvatarUtils
 {
@@ -15,8 +11,6 @@ namespace Jirko.Unity.VRoidAvatarUtils
 
         private List<string> messages_list;
         private string messages = "";
-
-        private VRoidAvatar sourceAvatarDTO = null;
 
         [MenuItem("VRoidAvatarSetup/Remove MissingDynamicBoneColliders", priority = 20)]
         static void ShowWindow()

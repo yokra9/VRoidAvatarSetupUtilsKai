@@ -1,9 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEditor;
-using VRC.SDK3.Editor;
-using VRC.SDKBase.Editor;
-using Jirko.Unity.VRoidAvatarUtils;
 
 namespace Jirko.Unity.VRoidAvatarUtils
 {
