@@ -20,3 +20,15 @@ https://jirko.booth.pm/items/3232745
 著作権はJirkoに帰属します。
 
 2021.08.28 Jirko
+
+---
+
+VRoidAvatarSetupUtils改 readme
+
+VRoidAvatarSetupUtils のフォーク版です。
+PhysBones や Playable Layers といった VRCSDK の新機能に追従するため開発しています。
+
+詳細な変更点は Releases を参照ください。
+https://github.com/yokra9/VRoidAvatarSetupUtilsKai/releases
+
+2022.01.10 yokra

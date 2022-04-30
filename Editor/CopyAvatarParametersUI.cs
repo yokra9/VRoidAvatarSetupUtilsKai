@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
 namespace Jirko.Unity.VRoidAvatarUtils
 {
@@ -19,14 +19,13 @@ namespace Jirko.Unity.VRoidAvatarUtils
         public bool expressionParameters = true;
         public bool rotationStates = true;
         public bool blueprintId = true;
-        public bool dynamicBones = true;
-        public bool dynamicBones_hair = true;
-        public bool dynamicBones_skirt = true;
-        public bool dynamicBones_bust = true;
-        public bool dynamicBones_sleeve = true;
-        public bool dynamicBones_other = true;
-
-        public bool dynamicBoneColiders = true;
+        public bool physBones = true;
+        public bool physBones_hair = true;
+        public bool physBones_skirt = true;
+        public bool physBones_bust = true;
+        public bool physBones_sleeve = true;
+        public bool physBones_other = true;
+        public bool physBoneColiders = true;
         public bool objects = false;
 
         public bool aimConstraint = true;
@@ -81,22 +80,22 @@ namespace Jirko.Unity.VRoidAvatarUtils
             EditorGUILayout.LabelField("Pipeline Manager", EditorStyles.boldLabel);
             blueprintId = EditorGUILayout.Toggle("Blueprint ID", blueprintId);
             EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Dynamic Bone", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Phys Bone", EditorStyles.boldLabel);
 
             if (avatarMode == 0)
             {
-                EditorGUILayout.LabelField("Dynamic Bones");
-                dynamicBones_hair = EditorGUILayout.Toggle("　髪の毛", dynamicBones_hair);
-                dynamicBones_skirt = EditorGUILayout.Toggle("　スカート", dynamicBones_skirt);
-                dynamicBones_sleeve = EditorGUILayout.Toggle("　袖", dynamicBones_sleeve);
-                dynamicBones_bust = EditorGUILayout.Toggle("　胸", dynamicBones_bust);
-                dynamicBones_other = EditorGUILayout.Toggle("　その他", dynamicBones_other);
+                EditorGUILayout.LabelField("Phys Bones", EditorStyles.boldLabel);
+                physBones_hair = EditorGUILayout.Toggle("　髪の毛", physBones_hair);
+                physBones_skirt = EditorGUILayout.Toggle("　スカート", physBones_skirt);
+                physBones_sleeve = EditorGUILayout.Toggle("　袖", physBones_sleeve);
+                physBones_bust = EditorGUILayout.Toggle("　胸", physBones_bust);
+                physBones_other = EditorGUILayout.Toggle("　その他", physBones_other);
             }
             else
             {
-                dynamicBones = EditorGUILayout.Toggle("Dynamic Bones", dynamicBones);
+                physBones = EditorGUILayout.Toggle("Phys Bones", physBones);
             }
-            dynamicBoneColiders = EditorGUILayout.Toggle("Dynamic Bone Coliders", dynamicBoneColiders);
+            physBoneColiders = EditorGUILayout.Toggle("Phys Bone Coliders", physBoneColiders);
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("Object", EditorStyles.boldLabel);
             objects = EditorGUILayout.Toggle("Objects", objects);
@@ -107,7 +106,7 @@ namespace Jirko.Unity.VRoidAvatarUtils
             parentConstraint = EditorGUILayout.Toggle("Parent", parentConstraint);
             positionConstraint = EditorGUILayout.Toggle("Position", positionConstraint);
             rotationConstraint = EditorGUILayout.Toggle("Rotation", rotationConstraint);
-            scaleConstraint = EditorGUILayout.Toggle("Scale",scaleConstraint);
+            scaleConstraint = EditorGUILayout.Toggle("Scale", scaleConstraint);
             EditorGUILayout.Space();
 
             if (sourceObject == null || targetObject == null)
@@ -128,13 +127,13 @@ namespace Jirko.Unity.VRoidAvatarUtils
                 sourceAvatarDTO.expressionParameters = expressionParameters;
                 sourceAvatarDTO.rotationStates = rotationStates;
                 sourceAvatarDTO.blueprintId = blueprintId;
-                sourceAvatarDTO.dynamicBones = dynamicBones;
-                sourceAvatarDTO.dynamicBones_hair = dynamicBones_hair;
-                sourceAvatarDTO.dynamicBones_skirt = dynamicBones_skirt;
-                sourceAvatarDTO.dynamicBones_bust = dynamicBones_bust;
-                sourceAvatarDTO.dynamicBones_sleeve = dynamicBones_sleeve;
-                sourceAvatarDTO.dynamicBones_other = dynamicBones_other;
-                sourceAvatarDTO.dynamicBoneColiders = dynamicBoneColiders;
+                sourceAvatarDTO.physBones = physBones;
+                sourceAvatarDTO.physBones_hair = physBones_hair;
+                sourceAvatarDTO.physBones_skirt = physBones_skirt;
+                sourceAvatarDTO.physBones_bust = physBones_bust;
+                sourceAvatarDTO.physBones_sleeve = physBones_sleeve;
+                sourceAvatarDTO.physBones_other = physBones_other;
+                sourceAvatarDTO.physBoneColiders = physBoneColiders;
                 sourceAvatarDTO.objects = objects;
                 sourceAvatarDTO.aimConstraint = aimConstraint;
                 sourceAvatarDTO.lookAtConstraint = lookAtConstraint;

@@ -1,16 +1,18 @@
-﻿using UnityEngine;
-using UnityEngine.Animations;
-using VRC.SDK3.Avatars.Components;
-using static VRC.SDK3.Avatars.Components.VRCAvatarDescriptor.CustomEyeLookSettings;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditorInternal;
+using UnityEngine;
+using UnityEngine.Animations;
+using VRC.Dynamics;
+using VRC.SDK3.Avatars.Components;
+using VRC.SDK3.Dynamics.PhysBone.Components;
+using static VRC.SDK3.Avatars.Components.VRCAvatarDescriptor.CustomEyeLookSettings;
 
 namespace Jirko.Unity.VRoidAvatarUtils
 {
     public class VRoidAvatar
     {
         private GameObject cloneGameObject = null;
-        private Dictionary<string, List<DynamicBone>> dynamicBoneDict;
+        private Dictionary<string, List<VRCPhysBone>> physBoneDict;
         private List<string> boneName;
         private List<string> exclusionBoneName;
         public List<string> messages;
@@ -42,13 +44,13 @@ namespace Jirko.Unity.VRoidAvatarUtils
         public bool eyeMovements = true;
         public bool rotationStates = true;
         public bool blueprintId = true;
-        public bool dynamicBones = true;
-        public bool dynamicBones_hair = true;
-        public bool dynamicBones_skirt = true;
-        public bool dynamicBones_bust = true;
-        public bool dynamicBones_sleeve = true;
-        public bool dynamicBones_other = true;
-        public bool dynamicBoneColiders = true;
+        public bool physBones = true;
+        public bool physBones_hair = true;
+        public bool physBones_skirt = true;
+        public bool physBones_bust = true;
+        public bool physBones_sleeve = true;
+        public bool physBones_other = true;
+        public bool physBoneColiders = true;
         public bool objects = true;
         public bool baseAnimationLayers = true;
         public bool specialAnimationLayers = true;
@@ -101,17 +103,17 @@ namespace Jirko.Unity.VRoidAvatarUtils
 
             VRC.Core.PipelineManager sourcePipelineManager = cloneGameObject.GetComponent<VRC.Core.PipelineManager>();
 
-            dynamicBoneDict = new Dictionary<string, List<DynamicBone>>();
+            physBoneDict = new Dictionary<string, List<VRCPhysBone>>();
 
-            DynamicBone[] dynamicBones;
-            dynamicBones = cloneGameObject.GetComponentsInChildren<DynamicBone>();
-            foreach (var dy in dynamicBones)
+            VRCPhysBone[] physBones;
+            physBones = cloneGameObject.GetComponentsInChildren<VRCPhysBone>();
+            foreach (var ph in physBones)
             {
-                if (!dynamicBoneDict.ContainsKey(dy.gameObject.GetFullPath()))
+                if (!physBoneDict.ContainsKey(ph.gameObject.GetFullPath()))
                 {
-                    dynamicBoneDict.Add(dy.gameObject.GetFullPath(), new List<DynamicBone>());
+                    physBoneDict.Add(ph.gameObject.GetFullPath(), new List<VRCPhysBone>());
                 }
-                dynamicBoneDict[dy.gameObject.GetFullPath()].Add(dy);
+                physBoneDict[ph.gameObject.GetFullPath()].Add(ph);
             }
             srcBlueprintId = sourcePipelineManager.blueprintId;
 
@@ -129,19 +131,19 @@ namespace Jirko.Unity.VRoidAvatarUtils
             boneName.Add("Bust");
             boneName.Add("Sleeve");
 
-            if (!dynamicBones_hair)
+            if (!physBones_hair)
             {
                 exclusionBoneName.Add("Hair");
             }
-            if (!dynamicBones_skirt)
+            if (!physBones_skirt)
             {
                 exclusionBoneName.Add("Skirt");
             }
-            if (!dynamicBones_bust)
+            if (!physBones_bust)
             {
                 exclusionBoneName.Add("Bust");
             }
-            if (!dynamicBones_sleeve)
+            if (!physBones_sleeve)
             {
                 exclusionBoneName.Add("Sleeve");
             }
@@ -181,10 +183,13 @@ namespace Jirko.Unity.VRoidAvatarUtils
                 targetAvatarDescriptor.customEyeLookSettings.eyesLookingStraight.right = quaterSR;
             }
 
-            if(baseAnimationLayers){
+            if (baseAnimationLayers)
+            {
                 messages.Add("BaseAnimationLayersをコピー");
-                foreach (var layer in srcBaseAnimationLayers){
-                    switch(layer.type){
+                foreach (var layer in srcBaseAnimationLayers)
+                {
+                    switch (layer.type)
+                    {
                         case VRCAvatarDescriptor.AnimLayerType.Base:
                             targetAvatarDescriptor.baseAnimationLayers[0] = layer;
                             break;
@@ -204,10 +209,13 @@ namespace Jirko.Unity.VRoidAvatarUtils
                 }
             }
 
-            if(specialAnimationLayers){
+            if (specialAnimationLayers)
+            {
                 messages.Add("SpecialAnimationLayersをコピー");
-                foreach (var layer in srcSpecialAnimationLayers){
-                    switch(layer.type){
+                foreach (var layer in srcSpecialAnimationLayers)
+                {
+                    switch (layer.type)
+                    {
                         case VRCAvatarDescriptor.AnimLayerType.Sitting:
                             targetAvatarDescriptor.specialAnimationLayers[0] = layer;
                             break;
@@ -221,14 +229,16 @@ namespace Jirko.Unity.VRoidAvatarUtils
                 }
             }
 
-            if(expressionsMenu){
+            if (expressionsMenu)
+            {
                 messages.Add("ExpressionsMenuをコピー");
-                targetAvatarDescriptor.expressionsMenu = srcExpressionsMenu; 
+                targetAvatarDescriptor.expressionsMenu = srcExpressionsMenu;
             }
 
-            if(expressionParameters){
+            if (expressionParameters)
+            {
                 messages.Add("ExpressionParametersをコピー");
-                targetAvatarDescriptor.expressionParameters = srcExpressionParameters; 
+                targetAvatarDescriptor.expressionParameters = srcExpressionParameters;
             }
 
             if (blueprintId)
@@ -277,184 +287,167 @@ namespace Jirko.Unity.VRoidAvatarUtils
                 messages.Add("Objectをコピー（" + obj_count + "件）");
             }
 
-            DynamicBoneCollider[] dynamicBoneColliders_array = null;
-            if (dynamicBoneColiders)
+            VRCPhysBoneCollider[] physBoneColliders_array = null;
+            if (physBoneColiders)
             {
                 int col_count = 0;
 
-                dynamicBoneColliders_array = gameObject.GetComponentsInChildren<DynamicBoneCollider>();
-                DynamicBoneCollider[] dynamicBoneColliders = null;
-                dynamicBoneColliders = cloneGameObject.GetComponentsInChildren<DynamicBoneCollider>();
-                foreach (var col in dynamicBoneColliders)
+                physBoneColliders_array = gameObject.GetComponentsInChildren<VRCPhysBoneCollider>();
+                VRCPhysBoneCollider[] physBoneColliders = null;
+                physBoneColliders = cloneGameObject.GetComponentsInChildren<VRCPhysBoneCollider>();
+                foreach (var col in physBoneColliders)
                 {
                     ComponentUtility.CopyComponent(col);
-                    ComponentUtility.PasteComponentAsNew(gameObject.transform.Find(col.gameObject.GetFullPath()).gameObject);
+                    VRCPhysBoneCollider target = gameObject.transform.Find(col.gameObject.GetFullPath()).gameObject.AddComponent<VRCPhysBoneCollider>();
+                    ComponentUtility.PasteComponentValues(target);
+                    if (col.rootTransform) target.rootTransform = gameObject.transform.Find(col.rootTransform.GetFullPath());
                     col_count++;
                 }
-                messages.Add("Dynamic Bone Coliderをコピー（" + col_count + "件）");
+                messages.Add("Phys Bone Coliderをコピー（" + col_count + "件）");
             }
 
-            if ((avatarMode == 1 && dynamicBones) || (avatarMode == 0 && (exclusionBoneName.Count > 0 || dynamicBones_other)))
+            if ((avatarMode == 1 && physBones) || (avatarMode == 0 && (exclusionBoneName.Count > 0 || physBones_other)))
             {
 
                 int bone_count = 0;
-                Dictionary<string, List<DynamicBone>> targetBoneDict = new Dictionary<string, List<DynamicBone>>();
+                Dictionary<string, List<VRCPhysBone>> targetBoneDict = new Dictionary<string, List<VRCPhysBone>>();
 
-                DynamicBone[] dynamicBones;
-                dynamicBones = gameObject.GetComponentsInChildren<DynamicBone>();
-                foreach (var dyn in dynamicBones)
+                VRCPhysBone[] physBones;
+                physBones = gameObject.GetComponentsInChildren<VRCPhysBone>();
+                foreach (var phy in physBones)
                 {
                     if (avatarMode == 0)
                     {
-                        if (dyn.m_Root != null && checkExclutionDynamicBoneContain(dyn.m_Root.name))
+                        if (phy.rootTransform != null && checkExclutionPhysBoneContain(phy.rootTransform.name))
                         {
                             continue;
                         }
-                        else if (dyn.m_Root != null && !checkDynamicBoneContain(dyn.m_Root.name) && !dynamicBones_other)
+                        else if (phy.rootTransform != null && !checkPhysBoneContain(phy.rootTransform.name) && !physBones_other)
                         {
                             continue;
                         }
                     }
-                    UnityEngine.Object.DestroyImmediate(dyn);
+                    UnityEngine.Object.DestroyImmediate(phy);
 
                 }
 
-                dynamicBones = cloneGameObject.GetComponentsInChildren<DynamicBone>();
-                foreach (var dyn in dynamicBones)
+                physBones = cloneGameObject.GetComponentsInChildren<VRCPhysBone>();
+                foreach (var phy in physBones)
                 {
                     if (avatarMode == 0)
                     {
-                        if (checkExclutionDynamicBoneContain(dyn.m_Root.name))
+                        if (checkExclutionPhysBoneContain(phy.rootTransform.name))
                         {
                             continue;
                         }
-                        else if (!checkDynamicBoneContain(dyn.m_Root.name) && !dynamicBones_other)
+                        else if (!checkPhysBoneContain(phy.rootTransform.name) && !physBones_other)
                         {
                             continue;
                         }
                     }
-                    ComponentUtility.CopyComponent(dyn);
-                    GameObject targetObj = gameObject.transform.Find(dyn.gameObject.GetFullPath()).gameObject;
+                    ComponentUtility.CopyComponent(phy);
+                    GameObject targetObj = gameObject.transform.Find(phy.gameObject.GetFullPath()).gameObject;
                     ComponentUtility.PasteComponentAsNew(targetObj);
 
-                    DynamicBone[] d = targetObj.GetComponents<DynamicBone>();
-                    DynamicBone newDynamicBone = d[d.Length - 1];
+                    VRCPhysBone[] p = targetObj.GetComponents<VRCPhysBone>();
+                    VRCPhysBone newPhysBone = p[p.Length - 1];
 
-                    newDynamicBone.m_Root = gameObject.transform.Find(newDynamicBone.m_Root.gameObject.GetFullPath()).gameObject.transform;
+                    newPhysBone.rootTransform = gameObject.transform.Find(newPhysBone.rootTransform.gameObject.GetFullPath()).gameObject.transform;
 
-                    List<DynamicBoneColliderBase> new_coliders = new List<DynamicBoneColliderBase>();
-                    foreach (var tarcol in newDynamicBone.m_Colliders)
+                    List<VRCPhysBoneColliderBase> new_coliders = new List<VRCPhysBoneColliderBase>();
+                    foreach (var tarcol in newPhysBone.colliders)
                     {
                         if (tarcol != null)
                         {
-                            new_coliders.Add(gameObject.transform.Find(tarcol.gameObject.GetFullPath()).gameObject.GetComponent<DynamicBoneColliderBase>());
+                            new_coliders.Add(gameObject.transform.Find(tarcol.gameObject.GetFullPath()).gameObject.GetComponent<VRCPhysBoneColliderBase>());
                         }
                     }
-                    List<Transform> new_exclusions = new List<Transform>();
-                    foreach (var tarexc in newDynamicBone.m_Exclusions)
+                    List<Transform> new_ignoreTransforms = new List<Transform>();
+                    foreach (var tarexc in newPhysBone.ignoreTransforms)
                     {
                         if (tarexc != null)
                         {
-                            new_exclusions.Add(tarexc);
+                            new_ignoreTransforms.Add(tarexc);
                         }
                     }
-                    newDynamicBone.m_Colliders = new_coliders;
-                    newDynamicBone.m_Exclusions = new_exclusions;
+                    newPhysBone.colliders = new_coliders;
+                    newPhysBone.ignoreTransforms = new_ignoreTransforms;
 
-                    if (newDynamicBone.m_ReferenceObject != null)
-                    {
-                        newDynamicBone.m_ReferenceObject = gameObject.transform.Find(newDynamicBone.m_ReferenceObject.gameObject.GetFullPath()).gameObject.transform;
-
-                    }
                     bone_count++;
                 }
                 if (bone_count > 0)
                 {
-                    messages.Add("Dynamic Boneをコピー（" + bone_count + "件）");
+                    messages.Add("Phys Boneをコピー（" + bone_count + "件）");
                 }
-                if (dynamicBoneColiders && dynamicBoneColliders_array != null && dynamicBoneColliders_array.Length > 0)
+                if (physBoneColiders && physBoneColliders_array != null && physBoneColliders_array.Length > 0)
                 {
 
-                    DynamicBone[] allDynamicBone = gameObject.GetComponentsInChildren<DynamicBone>();
+                    VRCPhysBone[] allPhysBone = gameObject.GetComponentsInChildren<VRCPhysBone>();
                     List<Dictionary<string, object>> allBoneList = new List<Dictionary<string, object>>();
-                    foreach (var bone in allDynamicBone)
+                    foreach (var bone in allPhysBone)
                     {
                         Dictionary<string, object> dict = new Dictionary<string, object>();
                         dict.Add("bone", bone);
 
-                        if (bone.m_Root != null)
+                        if (bone.rootTransform != null)
                         {
-                            dict.Add("m_Root", (object)bone.m_Root.gameObject.GetFullPath());
+                            dict.Add("rootTransform", (object)bone.rootTransform.gameObject.GetFullPath());
                         }
                         else
                         {
-                            dict.Add("m_Root", null);
+                            dict.Add("rootTransform", null);
                         }
 
-                        List<string> m_Colliders_list = new List<string>();
-                        foreach (var col in bone.m_Colliders)
+                        List<string> colliders_list = new List<string>();
+                        foreach (var col in bone.colliders)
                         {
-                            m_Colliders_list.Add(col.gameObject.GetFullPath());
+                            colliders_list.Add(col.gameObject.GetFullPath());
                         }
-                        dict.Add("m_Colliders", m_Colliders_list);
+                        dict.Add("colliders", colliders_list);
 
-                        List<string> m_Exclusions_list = new List<string>();
-                        foreach (var exc in bone.m_Exclusions)
+                        List<string> ignoreTransforms_list = new List<string>();
+                        foreach (var exc in bone.ignoreTransforms)
                         {
-                            m_Exclusions_list.Add(exc.gameObject.GetFullPath());
+                            ignoreTransforms_list.Add(exc.gameObject.GetFullPath());
                         }
-                        dict.Add("m_Exclusions", m_Exclusions_list);
+                        dict.Add("ignoreTransforms", ignoreTransforms_list);
 
-                        if (bone.m_ReferenceObject != null)
-                        {
-                            dict.Add("m_ReferenceObject", (object)bone.m_ReferenceObject.gameObject.GetFullPath());
-                        }
-                        else
-                        {
-                            dict.Add("m_ReferenceObject", null);
-                        }
                         allBoneList.Add(dict);
                     }
 
-                    foreach (var col in dynamicBoneColliders_array)
+                    foreach (var col in physBoneColliders_array)
                     {
                         UnityEngine.Object.DestroyImmediate(col);
 
                     }
                     foreach (var bonedic in allBoneList)
                     {
-                        DynamicBone bone = (DynamicBone)bonedic["bone"];
-                        string new_m_Root = (string)bonedic["m_Root"];
-                        bone.m_Root = gameObject.transform.Find(new_m_Root).gameObject.transform;
+                        VRCPhysBone bone = (VRCPhysBone)bonedic["bone"];
+                        string new_rootTransform = (string)bonedic["rootTransform"];
+                        bone.rootTransform = gameObject.transform.Find(new_rootTransform).gameObject.transform;
 
-                        List<DynamicBoneColliderBase> new_coliders = new List<DynamicBoneColliderBase>();
-                        List<string> new_coliders_string = (List<string>)bonedic["m_Colliders"];
+                        List<VRCPhysBoneColliderBase> new_coliders = new List<VRCPhysBoneColliderBase>();
+                        List<string> new_coliders_string = (List<string>)bonedic["colliders"];
                         foreach (var tarcol_string in new_coliders_string)
                         {
                             if (tarcol_string != null)
                             {
-                                new_coliders.Add(gameObject.transform.Find(tarcol_string).gameObject.GetComponent<DynamicBoneColliderBase>());
+                                new_coliders.Add(gameObject.transform.Find(tarcol_string).gameObject.GetComponent<VRCPhysBoneColliderBase>());
                             }
                         }
 
-                        List<Transform> new_exclusions = new List<Transform>();
-                        List<string> new_exclusions_string = (List<string>)bonedic["m_Exclusions"];
-                        foreach (var tarexc_string in new_exclusions_string)
+                        List<Transform> new_ignoreTransforms = new List<Transform>();
+                        List<string> new_ignoreTransforms_string = (List<string>)bonedic["ignoreTransforms"];
+                        foreach (var tarexc_string in new_ignoreTransforms_string)
                         {
                             if (tarexc_string != null)
                             {
-                                new_exclusions.Add(gameObject.transform.Find(tarexc_string));
+                                new_ignoreTransforms.Add(gameObject.transform.Find(tarexc_string));
                             }
                         }
-                        bone.m_Colliders = new_coliders;
-                        bone.m_Exclusions = new_exclusions;
+                        bone.colliders = new_coliders;
+                        bone.ignoreTransforms = new_ignoreTransforms;
 
-                        string new_m_ReferenceObject = (string)bonedic["m_ReferenceObject"];
-                        if (new_m_ReferenceObject != null)
-                        {
-                            bone.m_ReferenceObject = gameObject.transform.Find(new_m_ReferenceObject).gameObject.transform;
-
-                        }
                     }
                 }
             }
@@ -504,7 +497,7 @@ namespace Jirko.Unity.VRoidAvatarUtils
             Debug.Log("viewY : " + viewY);
             Debug.Log("viewZ : " + viewZ);
         }
-        private bool checkExclutionDynamicBoneContain(string str)
+        private bool checkExclutionPhysBoneContain(string str)
         {
             bool rtn = false;
             foreach (var name in exclusionBoneName)
@@ -513,7 +506,7 @@ namespace Jirko.Unity.VRoidAvatarUtils
             }
             return rtn;
         }
-        private bool checkDynamicBoneContain(string str)
+        private bool checkPhysBoneContain(string str)
         {
             bool rtn = false;
             foreach (var name in boneName)

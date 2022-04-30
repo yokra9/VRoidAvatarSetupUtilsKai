@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using VRC.SDK3.Dynamics.PhysBone.Components;
 
 namespace Jirko.Unity.VRoidAvatarUtils
 {
-    public class RemoveMissingDynamicBoneCollidersUI : EditorWindow
+    public class RemoveMissingPhysBoneCollidersUI : EditorWindow
     {
         Vector2 scrollPosition = new Vector2(0, 0);
         public GameObject targetObject = null;
@@ -12,10 +13,10 @@ namespace Jirko.Unity.VRoidAvatarUtils
         private List<string> messages_list;
         private string messages = "";
 
-        [MenuItem("VRoidAvatarSetup/Remove MissingDynamicBoneColliders", priority = 20)]
+        [MenuItem("VRoidAvatarSetup/Remove MissingPhysBoneColliders", priority = 20)]
         static void ShowWindow()
         {
-            var window = EditorWindow.GetWindow<RemoveMissingDynamicBoneCollidersUI>();
+            var window = EditorWindow.GetWindow<RemoveMissingPhysBoneCollidersUI>();
             window.minSize = new Vector2(400, 500);
         }
 
@@ -33,7 +34,7 @@ namespace Jirko.Unity.VRoidAvatarUtils
             {
                 messages = "";
                 messages_list = new List<string>();
-                RemoveMissingDynamicBoneColiders(targetObject);
+                RemoveMissingPhysBoneColiders(targetObject);
 
                 if (messages_list.Count > 0)
                 {
@@ -49,14 +50,14 @@ namespace Jirko.Unity.VRoidAvatarUtils
             GUILayout.Label(messages);
             EditorGUILayout.EndScrollView();
         }
-        private void RemoveMissingDynamicBoneColiders(GameObject targetObject)
+        private void RemoveMissingPhysBoneColiders(GameObject targetObject)
         {
-            DynamicBone[] dynamicBones = targetObject.GetComponentsInChildren<DynamicBone>();
-            foreach (var dynamicBone in dynamicBones)
+            VRCPhysBone[] PhysBones = targetObject.GetComponentsInChildren<VRCPhysBone>();
+            foreach (var PhysBone in PhysBones)
             {
-                dynamicBone.m_Colliders.RemoveAll(item => item == null);
+                PhysBone.colliders.RemoveAll(item => item == null);
             }
-            messages_list.Add("空のDynamicBoneColidersを削除しました。");
+            messages_list.Add("空のPhysBoneColidersを削除しました。");
         }
     }
 }
