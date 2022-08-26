@@ -1,3 +1,8 @@
+このフォークプロジェクトは開発を終了しました。今後は以下のメインプロジェクトで開発が継続されます。
+https://github.com/shoshoi/VRoidAvatarSetupUtils
+
+---
+
 VRoidAvatarSetupUtils readme
 
 本スクリプトはUnityのエディタ拡張です。
